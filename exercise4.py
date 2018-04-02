@@ -2,7 +2,8 @@
 '''
 
 In this exercise, you have a chance to play with music and sound effects.
-Find some (appropriately licensed) background music online (I recommend http://freemusicarchive.org) and set it as the soundtrack for this exercise. You should have at least three pieces of music that play alternate randomly.
+Find some (appropriately licensed) background music online (I recommend http://freemusicarchive.org) and set it as the soundtrack for this exercise.
+You should have at least three pieces of music that play alternate randomly.
 Then find some sound samples and make them play when keys are pressed. Describe the keys that play sound in your README.md.
 There are many sources of Creative Commons licensed sound effects, but most of them require registering with the site.
 If you want to add some graphics that are tied to either the music or the sound effects (or both), I will give you extra credit.
@@ -11,9 +12,12 @@ The music files that accompany this exercise are:
 	http://freemusicarchive.org/music/Lobo_Loco/Long__Relaxed/Chief_Inspector_Baldwin_ID_873
 	http://freemusicarchive.org/music/Lobo_Loco/Long__Relaxed/Ambient_Blues_Joe_ID_773
 	Both composed and performed by Lobo Loco and distributed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License
+	I obtained freemusicarchive files by monplaisir. the files have track titles
 Sound effects obtained from:
 	https://freesound.org/people/Hanbaal/sounds/178668/ (by Hanbaal)
 	https://freesound.org/people/Theriavirra/sounds/270090/ (by Theriavirra)
+	https://freesound.org/people/Veiler/sounds/264601/ (by Veiler)
+	https://freesound.org/people/zgump/sounds/96140/ (by zgump)
 	And are distributed under a Creative Commons Attribution 3.0 Unported License
 
 '''
@@ -37,12 +41,13 @@ def main():
 	SONG_END = pygame.USEREVENT + 1
 	pygame.mixer.music.set_endevent(SONG_END)
 
-	soundtrack = ['Ambient_Blues_Joe_ID_773.mp3','Chief_Inspector_Baldwin_ID_873.mp3']
+	soundtrack = ['Ambient_Blues_Joe_ID_773.mp3','Chief_Inspector_Baldwin_ID_873.mp3',
+                      'Internet_the_day_when_all_humans_will_disappear.mp3', 'This_is_not_a_joke.mp3']
 	current_track = random.choice(soundtrack)
 	pygame.mixer.music.load(os.path.join('mp3', current_track))
 	pygame.mixer.music.play()
 	
-	sound_files = ['snare.wav','drumsticks.wav']
+	sound_files = ['snare.wav','drumsticks.wav', 'hat.wav', 'kick_swedish.wav']
 	sound_library = []
 	for s in sound_files:
 		sound_library.append(pygame.mixer.Sound(os.path.join('mp3', s)))
@@ -65,8 +70,10 @@ def main():
 					sound_library[1].play()
 				if keys[pygame.K_LEFT]:
 					logging.info('Pressed left')
+					sound_library[2].play()
 				if keys[pygame.K_RIGHT]:
 					logging.info('Pressed right')
+					sound_library[3].play()
 
 			if event.type == SONG_END:		# we created a new event type that fires when the song is over
 				logging.info('Song ended')

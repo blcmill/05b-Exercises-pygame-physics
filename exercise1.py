@@ -22,9 +22,9 @@ logger = logging.getLogger(__name__)
 screen_size = (600,600)
 FPS = 60
 black = (0,0,0)
-gravity = 0
-friction = 0
-air_resistance = 0
+gravity = .5
+friction = .35
+air_resistance = .001
 
 class Ball(pygame.sprite.Sprite):
 	def __init__(self, i, size, color, position, direction):
@@ -41,29 +41,33 @@ class Ball(pygame.sprite.Sprite):
 	def update(self):
 		(dx,dy) = self.direction	# get the current velocity
 		self.rect.x += dx		# move the sprite horizontally
-		self.rect.y += dy
+		self.rect.y += dy               # move the sprite vertically
 
-		dy = dy + gravity
-		dx *= (1.0-air_resistance)
-		dy *= (1.0-air_resistance)
+		dy = dy + gravity #y velocity is dy plus gravity
+		#this causes the balls to accelerate downward
+		dx *= (1.0-air_resistance) #dx gets multiplied by 1 minus air resistance, so air resistance should be less than 1
+		#this reduces the x distance every frame
+		dy *= (1.0-air_resistance) #dy gets multiplied by 1 minus air resistance, so air resistance should be less than 1
+		#this reduces the y distance every frame
 		
-		(WIDTH,HEIGHT) = screen_size
-		if self.rect.right >= WIDTH:
-			self.rect.right = WIDTH
-			dx = dx * -1 * (1.0-friction)
-		if self.rect.left <= 0:
-			self.rect.left = 0
-			dx = dx * -1 * (1.0-friction)
-		if self.rect.top <= 0:
-			self.rect.top = 0
-			dy = dy * -1 * (1.0-friction)
-		if self.rect.bottom >= HEIGHT:
-			self.rect.bottom = HEIGHT
-			dx = dx * -1 * (1.0-friction)
-			dy = dy * -1 * (1.0-friction)
+		(WIDTH,HEIGHT) = screen_size #sets tuple for 
+		if self.rect.right >= WIDTH: #if the ball is off to the right side:
+			self.rect.right = WIDTH #set it to be at the right side
+			dx = dx * -1 * (1.0-friction) #and reverse its x direction, as well as multiplying it by 1.0 - friction
+			#thus friction should be less than 1, ideally
+		if self.rect.left <= 0: #if the left side of the ball is off to the side:
+			self.rect.left = 0 #set it to be the left side
+			dx = dx * -1 * (1.0-friction) #and reverse its direction
+		if self.rect.top <= 0: #if the top of the object is off the top:
+			self.rect.top = 0 #set it to be at the top
+			dy = dy * -1 * (1.0-friction) #and  reverse it and reduce its speed
+		if self.rect.bottom >= HEIGHT: #if it touches the bottom:
+			self.rect.bottom = HEIGHT #set it to be at the bottom
+			dx = dx * -1 * (1.0-friction) #flip it in the x direction and reduce speed?
+			dy = dy * -1 * (1.0-friction) #flip it in the y direction and reduce speed
 			if abs(dy) < 1:			# a hack to keep it from bouncing forever
-				dy = 0
-		self.direction = (dx,dy)
+				dy = 0 #keeps the dy at zero if its too small
+		self.direction = (dx,dy) #set the tuple to be dx, dy
 
 
 def main():

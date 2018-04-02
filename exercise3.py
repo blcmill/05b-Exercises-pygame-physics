@@ -17,12 +17,13 @@ logging.basicConfig(format='[%(filename)s:%(lineno)d] %(message)s', level=loggin
 logger = logging.getLogger(__name__)
 
 screen_size = (800,600)
-FPS = 60
+FPS = 10
 black = (0,0,0)
 img_size = (32,64)
 img_margin = (0,0)
 starting_position = (200,400)
 walking = [(1,0),(2,0),(3,0),(4,0),(5,0),(6,0)]
+jumps = [(7,1), (8,1), (9,1)]
 gravity = 0.6
 
 class Runner(pygame.sprite.Sprite):
@@ -37,12 +38,12 @@ class Runner(pygame.sprite.Sprite):
 		self.image.blit(self.sheet, (0,0), self.rect)	#from the sheet, grab the correct image
 		
 		(self.rect.x,self.rect.y) = position
-
+		self.jumping_animation = 0
 		self.walking_animation = 0
 		self.ground = position[1]
 		self.jumping = False
 		self.velocity = (0.0,0.0)
-		self.jump_velocity = 10
+		self.jump_velocity = 5
 		
 	def update(self):
 		(vx,vy) = self.velocity
@@ -57,9 +58,16 @@ class Runner(pygame.sprite.Sprite):
 			self.rect.x += vx
 			self.rect.y += vy
 			vy += gravity
+			(i,j) = jumps[self.jumping_animation]
+			x = (self.width + self.margin_x)*i + self.margin_x
+			y = (self.height + self.margin_y)*j + self.margin_y
+			self.image.blit(self.sheet, (0,0), (x,y,self.width,self.height))
+			if self.jumping_animation < 2:
+                                self.jumping_animation += 1
 			if self.rect.top >= self.ground:
 				self.rect.top = self.ground
 				vy = 0
+				self.jumping_animation = 0
 				self.jumping = False
 		self.velocity = (vx,vy)
 	

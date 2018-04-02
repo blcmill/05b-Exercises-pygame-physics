@@ -65,30 +65,30 @@ class Ball(pygame.sprite.Sprite):
 		'''
 		(dx,dy) = self.direction				# the x and y components of the direction
 		(odx,ody) = other_object.direction		# the x and y components of the other object's direction
-		(cx,cy) = self.rect.center
-		(ocx,ocy) = other_object.rect.center
-		radius = self.rect.width/2
-		oradius = other_object.rect.width/2
+		(cx,cy) = self.rect.center #set center tuple to be the x and y components of the center point
+		(ocx,ocy) = other_object.rect.center #other x and y components set (center)
+		radius = self.rect.width/2 #radius is half of the width of the object rectangle
+		oradius = other_object.rect.width/2 #same as above
 		#find the hypotenuse
-		distance = math.sqrt(abs(cx-ocx)**2 + abs(cy-ocy)**2)
-		if distance <= 0:
-			distance = 0.1
-		combined_distance = (radius+oradius)
+		distance = math.sqrt(abs(cx-ocx)**2 + abs(cy-ocy)**2) #distance is the hypotenuse of the x and y distances between self and other
+		if distance <= 0: #if the distance is zero or negative:
+			distance = 0.1 #it's set to be very small
+		combined_distance = (radius+oradius) #this is the minimum distance for a collision: the combined distance of the two radius
 		if distance <= combined_distance:	#collision
 			normal = ((cx-ocx)/distance,(cy-ocy)/distance)	# a vector tangent to the plane of collision
 			velocity_delta = ((odx-dx),(ody-dy))	#the relative difference between the speed of the two objects
-			(nx,ny) = normal
-			(vdx,vdy) = velocity_delta
-			dot_product = nx*vdx + ny*vdy
+			(nx,ny) = normal #sets nx and ny for normal vectors
+			(vdx,vdy) = velocity_delta #velocity change for next
+			dot_product = nx*vdx + ny*vdy #this is the dot product formula for vectors
 			if dot_product >= 0:	#check if the objects are moving toward each other
-				impulse_strength = dot_product * (self.mass / other_object.mass)
-				impulse = (ix,iy) = (impulse_strength * nx, impulse_strength * ny)
-				dx += ix * (other_object.mass/self.mass)
-				dy += iy * (other_object.mass/self.mass)
-				self.direction = (dx,dy)
-				odx -= ix * (self.mass/other_object.mass)
+				impulse_strength = dot_product * (self.mass / other_object.mass) #sets force of collision
+				impulse = (ix,iy) = (impulse_strength * nx, impulse_strength * ny) #sets actual impact of collision
+				dx += ix * (other_object.mass/self.mass) #changes x position based on impulse
+				dy += iy * (other_object.mass/self.mass) #same for y
+				self.direction = (dx,dy) #sets direction to be the changed variables
+				odx -= ix * (self.mass/other_object.mass) #changes other object based on masses and impulses
 				ody -= iy * (self.mass/other_object.mass)
-				other_object.direction = (odx,ody)
+				other_object.direction = (odx,ody) #sets direction of other object to be the changed variables
 
 	def draw(self,screen):
 		self.image.blit(screen,(0,0),self.rect)
